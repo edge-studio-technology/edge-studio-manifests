@@ -1,7 +1,7 @@
 {
-  "frontend": "ghcr.io/integritas-technology/integritas-pi-frontend@sha256:7d1332c94db0a5e4b37fba1b072c92fe1586fe73caffe2f5392cae629cf90371",
-  "backend": "ghcr.io/integritas-technology/integritas-pi-backend@sha256:f05903a984f1e883261def55673e91b6fc26f1b5c64c7801165cf56189c0c8f2",
+  "frontend": "ghcr.io/integritas-technology/integritas-pi-frontend@sha256:5c17890356ac3dfafb2ec98bd85bf07b8dc5c34ff5763e9d9145732c06aed147",
+  "backend": "ghcr.io/integritas-technology/integritas-pi-backend@sha256:1039bcf781049261f5aaeb0fcb065e6dc99c2c380a107ed1cdbb079227edd4cc",
   "updateAgent": "ghcr.io/integritas-technology/integritas-pi-update-agent@sha256:9752168721e34ed932634ab12afd349ff2cc5bc83e2b20ddfcf8d7bca0d164c7",
-  "version": "v0.21.0",
-  "createdAt": "2026-07-21T10:44:25.327Z"
+  "version": "v0.21.5",
+  "createdAt": "2026-07-22T15:27:57.791Z"
 }
