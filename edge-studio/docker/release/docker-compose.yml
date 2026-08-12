@@ -7,10 +7,10 @@
 # browser and accept the self-signed certificate warning (expected).
 
 # Pinned regardless of folder name: update-agent hardcodes its container
-# lookup to the "integritas-pi" Compose project (matches every real install,
-# which always lives in a folder literally named integritas-pi). Without
+# lookup to the "edge-studio" Compose project (matches every real install,
+# which always lives in a folder literally named edge-studio). Without
 # this, update-agent can't find the frontend/backend containers to swap.
-name: integritas-pi
+name: edge-studio
 
 services:
   # One-shot: generates the self-signed HTTPS cert the frontend needs, since
@@ -28,8 +28,8 @@ services:
         apk add --no-cache openssl >/dev/null
         openssl req -x509 -nodes -days 825 -newkey rsa:2048 \
           -keyout /certs/server.key -out /certs/server.crt \
-          -subj "/CN=integritas-pi" \
-          -addext "subjectAltName=DNS:localhost,DNS:integritas-pi,IP:127.0.0.1"
+          -subj "/CN=edge-studio" \
+          -addext "subjectAltName=DNS:localhost,DNS:edge-studio,IP:127.0.0.1"
         chmod 600 /certs/server.key
         chmod 644 /certs/server.crt
         echo "TLS certificate generated"
@@ -39,7 +39,7 @@ services:
       - integritas
 
   backend:
-    image: ghcr.io/integritas-technology/integritas-pi-backend@sha256:9acd58b428e8f81a33bb92a39897b24cf9e8b387ff36794d5ea798b49087d08b
+    image: ghcr.io/integritas-technology/edge-studio-backend@sha256:cac09f533d2308a3ad5f8854b133f89685977bc486bbdbc7f7209890db14cd21
     environment:
       PORT: 3000
       HOST_FILES_ROOT: /host-files
@@ -47,7 +47,7 @@ services:
       INTEGRITAS_CONNECT_BASE_URL: ${INTEGRITAS_CONNECT_BASE_URL:-https://integritas.technology}
       INTEGRITAS_BASE_URL: ${INTEGRITAS_BASE_URL:-https://integritas.technology/core}
       INTEGRITAS_API_KEY: ${INTEGRITAS_API_KEY:-}
-      INTEGRITAS_REQUEST_ID: ${INTEGRITAS_REQUEST_ID:-integritas-pi}
+      INTEGRITAS_REQUEST_ID: ${INTEGRITAS_REQUEST_ID:-edge-studio}
       INTEGRITAS_REQUEST_TIMEOUT_MS: ${INTEGRITAS_REQUEST_TIMEOUT_MS:-15000}
       INTEGRITAS_POLL_INTERVAL_SECONDS: ${INTEGRITAS_POLL_INTERVAL_SECONDS:-30}
       INTEGRITAS_PROOF_POLL_TIMEOUT_MINUTES: ${INTEGRITAS_PROOF_POLL_TIMEOUT_MINUTES:-5}
@@ -57,8 +57,7 @@ services:
       MINIMA_STALL_BLOCK_AGE_SECONDS: ${MINIMA_STALL_BLOCK_AGE_SECONDS:-300}
       MINIMA_AUTO_RESYNC: ${MINIMA_AUTO_RESYNC:-false}
       MINIMA_AUTO_RESYNC_COOLDOWN_MINUTES: ${MINIMA_AUTO_RESYNC_COOLDOWN_MINUTES:-30}
-      DATABASE_PATH: /data/integritas-pi.db
-      INTEGRITAS_PI_VERSION: ${INTEGRITAS_PI_VERSION:-v0.37.0}
+      DATABASE_PATH: /data/edge-studio.db
       ENABLE_MQTT_BROKER: "false"
       ENABLE_CAMERA: "false"
       APP_SECRET: ${APP_SECRET:-dev-change-me}
@@ -83,7 +82,7 @@ services:
       - integritas
 
   frontend:
-    image: ghcr.io/integritas-technology/integritas-pi-frontend@sha256:245902d653cbb3357234eb91605ad796ee34e9535a5fd9de7fa1aa6417f3c663
+    image: ghcr.io/integritas-technology/edge-studio-frontend@sha256:9e453d237ebd03ec262bf18c98b0aae2530630a87b29559bb9e2d38be3e2e28f
     ports:
       - "${FRONTEND_PORT:-8080}:443"
     volumes:
@@ -98,7 +97,7 @@ services:
       - integritas
 
   update-agent:
-    image: ghcr.io/integritas-technology/integritas-pi-update-agent@sha256:b22dd2ae369b860b930197e6da1bf9bb3ba3a8e710ab706ee55758b247dfb97b
+    image: ghcr.io/integritas-technology/edge-studio-update-agent@sha256:1895f41c977d36ced6da11f43617c3e813eb68453ce37b56e6f82e0d012062b5
     environment:
       PORT: 8081
       DOCKER_SOCKET_PATH: /var/run/docker.sock
@@ -142,4 +141,4 @@ services:
 
 networks:
   integritas:
-    name: integritas-pi
+    name: edge-studio
