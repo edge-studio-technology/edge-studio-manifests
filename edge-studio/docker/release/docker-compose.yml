@@ -13,28 +13,36 @@
 name: edge-studio
 
 services:
-  # One-shot: generates the self-signed HTTPS cert the frontend needs, since
-  # runners won't have `openssl` on the host like a real install.sh run does.
+  # One-shot: generates the self-signed HTTPS cert the frontend needs and chowns
+  # bind-mounted data dirs to uid 1000 (the "node" user backend/update-agent run
+  # as), since runners won't have `openssl` or a pre-chowned host dir like a real
+  # install.sh run does.
   cert-init:
     image: alpine:3.20
     entrypoint: ["/bin/sh", "-c"]
     command:
       - |
         set -e
-        if [ -f /certs/server.crt ] && [ -f /certs/server.key ]; then
+        mkdir -p /data/certs /minima-backups
+        if [ -f /data/certs/server.crt ] && [ -f /data/certs/server.key ]; then
           echo "TLS certificate already exists, skipping"
-          exit 0
+        else
+          apk add --no-cache openssl >/dev/null
+          openssl req -x509 -nodes -days 825 -newkey rsa:2048 \
+            -keyout /data/certs/server.key -out /data/certs/server.crt \
+            -subj "/CN=edge-studio" \
+            -addext "subjectAltName=DNS:localhost,DNS:edge-studio,IP:127.0.0.1"
+          chmod 600 /data/certs/server.key
+          chmod 644 /data/certs/server.crt
+          echo "TLS certificate generated"
         fi
-        apk add --no-cache openssl >/dev/null
-        openssl req -x509 -nodes -days 825 -newkey rsa:2048 \
-          -keyout /certs/server.key -out /certs/server.crt \
-          -subj "/CN=edge-studio" \
-          -addext "subjectAltName=DNS:localhost,DNS:edge-studio,IP:127.0.0.1"
-        chmod 600 /certs/server.key
-        chmod 644 /certs/server.crt
-        echo "TLS certificate generated"
+        chown -R 1000:1000 /data /minima-backups /update-agent-state \
+          && echo "Host directories prepared" \
+          || echo "Warning: chown skipped (not supported on this filesystem), continuing"
     volumes:
-      - ${DATA_DIR:-./data}/certs:/certs
+      - ${DATA_DIR:-./data}:/data
+      - ${MINIMA_DATA_DIR:-./minima}/backups:/minima-backups
+      - ${UPDATE_AGENT_STATE_DIR:-./update-agent-state}:/update-agent-state
     networks:
       - integritas
 
@@ -77,7 +85,10 @@ services:
       - "3000"
     restart: unless-stopped
     depends_on:
-      - minima
+      cert-init:
+        condition: service_completed_successfully
+      minima:
+        condition: service_started
     networks:
       - integritas
 
@@ -118,7 +129,10 @@ services:
       - "8081"
     restart: unless-stopped
     depends_on:
-      - backend
+      cert-init:
+        condition: service_completed_successfully
+      backend:
+        condition: service_started
     networks:
       - integritas
 
