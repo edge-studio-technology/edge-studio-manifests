@@ -1,0 +1,7 @@
+{
+  "frontend": "ghcr.io/integritas-technology/edge-studio-frontend@sha256:e639968a719919d207bdaa60639117b36bf0385a2fe41c6ba33597eccdc138c6",
+  "backend": "ghcr.io/integritas-technology/edge-studio-backend@sha256:a1a0b32b6f021daa66dd1e7614a863b3ebbe014a8af7dc9d585467ed42923d22",
+  "updateAgent": "ghcr.io/integritas-technology/edge-studio-update-agent@sha256:db9f27f5327273579fcd286e7c4e1f2dba47478100bc537e0091886e61a6c469",
+  "version": "v0.38.1-dev.1",
+  "createdAt": "2026-08-13T13:55:36.541Z"
+}
