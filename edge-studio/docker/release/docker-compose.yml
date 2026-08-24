@@ -93,7 +93,7 @@ services:
       - integritas
 
   frontend:
-    image: ghcr.io/edge-studio-technology/edge-studio-frontend@sha256:8c92229432c6d634bb0bf0403b0dc4e31b0e9d0cb049610cf0df9ac3807f043b
+    image: ghcr.io/edge-studio-technology/edge-studio-frontend@sha256:04869a80b0d1a9545ebb7da89fb7ac924206b655dbfcc38493cb6330d452a437
     ports:
       - "${FRONTEND_PORT:-8080}:443"
     volumes:
