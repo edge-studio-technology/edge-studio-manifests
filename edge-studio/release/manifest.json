@@ -2,6 +2,6 @@
   "frontend": "ghcr.io/edge-studio-technology/edge-studio-frontend@sha256:789be88481dd18957139ae3f1b17bbbb563c31ede2d5524b4c365108a8b23e38",
   "backend": "ghcr.io/edge-studio-technology/edge-studio-backend@sha256:dfc6b7d0073073e9432e9f07c00d2227598aad8e7605837908c9eb99c32a1ca4",
   "updateAgent": "ghcr.io/edge-studio-technology/edge-studio-update-agent@sha256:e3e5ed1ec9e135a9b00dd7df2bd114f4f0d5011e575ffe6e564b5a549504bccd",
-  "version": "v0.38.14",
-  "createdAt": "2026-09-03T07:14:24.622Z"
+  "version": "v0.38.16-dev",
+  "createdAt": "2026-09-03T07:29:22.112Z"
 }
