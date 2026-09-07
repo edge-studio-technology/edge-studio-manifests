@@ -1,10 +1,10 @@
 # Integritas Manifests
 
-Private distribution repo for Edge Studio's signed update manifests and channel install artifacts. This repo has no code of its own — it's a pull target that `edge-studio`'s CI writes to and that VPS hosts serve over HTTPS.
+Private distribution repo for Edge Studio's signed update manifests and channel install artifacts. This repo has no code of its own - it's a pull target that `edge-studio`'s CI writes to and that VPS hosts serve over HTTPS.
 
 ## Why this repo exists
 
-`update-agent` (in `edge-studio`) fetches a signed manifest from a `MANIFEST_URL` to know which digest-pinned images to deploy. The VPS hosts serving that URL are firewalled on SSH, so CI can't push directly. Instead, `edge-studio`'s `release.yml` pushes here over HTTPS (GitHub App token, no deploy key), and each VPS runs a cron job that pulls this repo and serves it via nginx. Signature verification happens in `update-agent`, not in transport — this repo and the pull step are not part of the trust boundary, only the delivery path.
+`update-agent` (in `edge-studio`) fetches a signed manifest from a `MANIFEST_URL` to know which digest-pinned images and host runtime bundle to deploy. The VPS hosts serving that URL are firewalled on SSH, so CI can't push directly. Instead, `edge-studio`'s `release.yml` pushes here over HTTPS (GitHub App token, no deploy key), and each VPS runs a cron job that pulls this repo and serves it via nginx. Signature verification happens in `update-agent`, not in transport - this repo and the pull step are not part of the trust boundary, only the delivery path.
 
 See `docs/plans/manifest-deploy-pull-model.md` and `docs/adr/0007-release-channels-and-compose-generation.md` in `edge-studio` for the full design rationale.
 
@@ -15,8 +15,9 @@ App-namespaced, so a second app could reuse this repo later without a folder mig
 ```
 edge-studio/
   <channel>/
-    manifest.json       # signed manifest: {frontend, backend, updateAgent, version, createdAt}
+    manifest.json       # signed manifest with image digests and hostRuntime metadata
     manifest.json.sig   # Ed25519 signature over manifest.json
+    edge-studio-runtime.tar.gz  # generated host runtime bundle referenced by manifest.json
   docker/
     <channel>/
       docker-compose.yml  # generated, images pinned to this channel's manifest digests
@@ -25,11 +26,42 @@ edge-studio/
 
 Channels: `development`, `canary`, `release`. Channel identity lives in the folder path, not in a git branch — everything above lives on `main`.
 
+## Manifest shape
+
+Each generated `edge-studio/<channel>/manifest.json` is signed after all fields are inserted and has this shape:
+
+```json
+{
+  "frontend": "ghcr.io/.../edge-studio-frontend@sha256:...",
+  "backend": "ghcr.io/.../edge-studio-backend@sha256:...",
+  "updateAgent": "ghcr.io/.../edge-studio-update-agent@sha256:...",
+  "hostRuntime": {
+    "url": "https://edgestudio.technology/manifest/<channel>/edge-studio-runtime.tar.gz",
+    "sha256": "<64-char lowercase hex sha256>"
+  },
+  "version": "...",
+  "createdAt": "..."
+}
+```
+
+`hostRuntime.sha256` is the SHA-256 of the exact `edge-studio-runtime.tar.gz` bytes served from `hostRuntime.url`.
+
 ## How content gets here
 
-Written only by `edge-studio`'s `release.yml` (`manifest` job), authenticated via the `integritas-pi-manifest-deploy` GitHub App (installed on this repo only, `Contents: Read and write`, short-lived per-run installation token — no standing deploy key/PAT). Real release tags push to `main`; `*-test.*` dry-run tags push to `dev` (must exist ahead of time, created once from `main`).
+Written only by `edge-studio`'s `release.yml` (`manifest` job), authenticated via the `integritas-pi-manifest-deploy` GitHub App (installed on this repo only, `Contents: Read and write`, short-lived per-run installation token - no standing deploy key/PAT). Real release tags push to `main`; `*-test.*` dry-run tags push to `dev` (must exist ahead of time, created once from `main`).
+
+For each channel, the app repo release workflow generates and pushes `edge-studio/<channel>/manifest.json`, `edge-studio/<channel>/manifest.json.sig`, and `edge-studio/<channel>/edge-studio-runtime.tar.gz` together. The manifest signature must be generated after `hostRuntime` has been inserted.
 
 Do not hand-edit files under `edge-studio/` — they're overwritten by the next matching CI run and any manual edit has no signature to back it.
+
+## Release verification
+
+After a release workflow updates this repo, verify the generated channel output before relying on update-agent updates:
+
+1. `edge-studio/<channel>/manifest.json` includes `hostRuntime.url` and a 64-character lowercase hex `hostRuntime.sha256`.
+2. `edge-studio/<channel>/manifest.json.sig` verifies against the final `manifest.json`.
+3. `edge-studio/<channel>/edge-studio-runtime.tar.gz` includes `host-agent/edge_studio_host_agent.py`, `camera-helper/edge_studio_camera_helper.py`, `sensor-helper/edge_studio_sensor_helper.py`, and `docker/mosquitto/mosquitto.conf`.
+4. Downloading the public `hostRuntime.url` and hashing the downloaded bytes matches `hostRuntime.sha256`.
 
 ## How content is consumed
 
