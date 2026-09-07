@@ -1,7 +1,11 @@
 {
-  "frontend": "ghcr.io/edge-studio-technology/edge-studio-frontend@sha256:9a64451f322b6b558b21133107ebed1a4871778b15867550011235c07fb826d8",
-  "backend": "ghcr.io/edge-studio-technology/edge-studio-backend@sha256:15ce491674d0a90a0c97d07c4cd756385b26a28d4647136dde80fa255283d4ff",
-  "updateAgent": "ghcr.io/edge-studio-technology/edge-studio-update-agent@sha256:8d118092ff90066d06b6221cea48d055f330afe40b92e12034e538b3a64b6218",
-  "version": "v0.40.0-dev.1",
-  "createdAt": "2026-09-03T14:02:27.962Z"
+  "frontend": "ghcr.io/edge-studio-technology/edge-studio-frontend@sha256:06def10bbace6cf1d0d858f00a98dc89fb71da0685907e4febe1fbc12f1fd809",
+  "backend": "ghcr.io/edge-studio-technology/edge-studio-backend@sha256:1807cd9a380cc55770b6aef63d01e5f35b8d1b1e7702c6fcd23831545e4ba2fe",
+  "updateAgent": "ghcr.io/edge-studio-technology/edge-studio-update-agent@sha256:88689eb79e00e6eb6effd81c60861fe9074e175236e583a8d1930a5836ff70a6",
+  "hostRuntime": {
+    "url": "https://edgestudio.technology/manifest/development/edge-studio-runtime.tar.gz",
+    "sha256": "25f3d94aaa7c0b389cf3e6bfad3476770f2c13db1ee53860d753abfa8eb7c4b1"
+  },
+  "version": "v0.50.0-dev.1",
+  "createdAt": "2026-09-07T08:41:44.544Z"
 }
