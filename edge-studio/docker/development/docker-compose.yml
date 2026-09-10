@@ -113,7 +113,7 @@ services:
       - integritas
 
   update-agent:
-    image: ghcr.io/edge-studio-technology/edge-studio-update-agent@sha256:fd163f7cb0115823f06f2b4073a994746a0ddd2690ca3d22632cc083a71f576a
+    image: ghcr.io/edge-studio-technology/edge-studio-update-agent@sha256:7e75599c5c618b402dd83488d830ad88b72f77cd0275e2dea0a4536ddd66fece
     environment:
       PORT: 8081
       DOCKER_SOCKET_PATH: /var/run/docker.sock
