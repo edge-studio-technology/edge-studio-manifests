@@ -1,11 +1,11 @@
 {
   "frontend": "ghcr.io/edge-studio-technology/edge-studio-frontend@sha256:ca1340f3774da62a5b9bc1ca545a53791ddbbc224a9db058c70955e10c92cde5",
   "backend": "ghcr.io/edge-studio-technology/edge-studio-backend@sha256:f2f9db8b7c2c9ff8ee43c108e004b96cae229a59b046a5bb639fe85422b9c6d5",
-  "updateAgent": "ghcr.io/edge-studio-technology/edge-studio-update-agent@sha256:fd163f7cb0115823f06f2b4073a994746a0ddd2690ca3d22632cc083a71f576a",
+  "updateAgent": "ghcr.io/edge-studio-technology/edge-studio-update-agent@sha256:7e75599c5c618b402dd83488d830ad88b72f77cd0275e2dea0a4536ddd66fece",
   "hostRuntime": {
     "url": "https://edgestudio.technology/manifest/development/edge-studio-runtime.tar.gz",
-    "sha256": "43545a108014da01fec25157e209f8217b48bdefaeee1ad74579ef7297b0b4ee"
+    "sha256": "5106b13a036c3e82305c8eec916cb998fa01a2019ce9e1946c353741d4d18bcb"
   },
-  "version": "v0.50.0-dev.5",
-  "createdAt": "2026-09-09T09:22:23.040Z"
+  "version": "v0.50.0-dev.6",
+  "createdAt": "2026-09-10T06:54:27.134Z"
 }
