@@ -47,7 +47,7 @@ services:
       - integritas
 
   backend:
-    image: ghcr.io/edge-studio-technology/edge-studio-backend@sha256:d2cc8230c66c167036db24a87fe65327681231dbc293eb7a723b9b24e573aeb3
+    image: ghcr.io/edge-studio-technology/edge-studio-backend@sha256:33640600501bb8dc89ae5ce3b0b01777e2d80560fc9aef7146a42f7f029349c5
     environment:
       PORT: 3000
       HOST_FILES_ROOT: /host-files
@@ -68,6 +68,11 @@ services:
       DATABASE_PATH: /data/edge-studio.db
       ENABLE_MQTT_BROKER: "false"
       ENABLE_CAMERA: "false"
+      ENABLE_GPIO: "false"
+      ENABLE_SENSORS: "false"
+      HOST_AGENT_URL: ${HOST_AGENT_URL:-http://host.docker.internal:38182}
+      HOST_AGENT_TOKEN: ${HOST_AGENT_TOKEN:-}
+      HOST_CAPABILITY_DEBUG: ${HOST_CAPABILITY_DEBUG:-false}
       APP_SECRET: ${APP_SECRET:-dev-change-me}
       COOKIE_SECURE: ${COOKIE_SECURE:-true}
       SESSION_MAX_AGE_DAYS: ${SESSION_MAX_AGE_DAYS:-7}
@@ -93,7 +98,7 @@ services:
       - integritas
 
   frontend:
-    image: ghcr.io/edge-studio-technology/edge-studio-frontend@sha256:5296e2affc9fe14c786bd828445307606cc075105923c104f0700cec6bde02a0
+    image: ghcr.io/edge-studio-technology/edge-studio-frontend@sha256:331c40247d0de325cb2e53ec465f5b6108f0b3890b096c1b50e8b25d076b6b60
     ports:
       - "${FRONTEND_PORT:-8080}:443"
     volumes:
@@ -108,13 +113,15 @@ services:
       - integritas
 
   update-agent:
-    image: ghcr.io/edge-studio-technology/edge-studio-update-agent@sha256:e3e5ed1ec9e135a9b00dd7df2bd114f4f0d5011e575ffe6e564b5a549504bccd
+    image: ghcr.io/edge-studio-technology/edge-studio-update-agent@sha256:2903758c6d6ea9d34cd11c54e5b12c1127f1c8f5daab8d7facb2b15f2d54061b
     environment:
       PORT: 8081
       DOCKER_SOCKET_PATH: /var/run/docker.sock
       MANIFEST_URL: ${MANIFEST_URL}
       RELEASE_CHANNEL: ${RELEASE_CHANNEL:-release}
       BACKEND_INTERNAL_URL: http://backend:3000
+      HOST_AGENT_URL: ${HOST_AGENT_URL:-http://host.docker.internal:38182}
+      HOST_AGENT_TOKEN: ${HOST_AGENT_TOKEN:-}
       STATE_DIR_IN_CONTAINER: /state
       HEALTH_CHECK_TIMEOUT_MS: ${UPDATE_HEALTH_CHECK_TIMEOUT_MS:-60000}
       HEALTH_CHECK_INTERVAL_MS: ${UPDATE_HEALTH_CHECK_INTERVAL_MS:-2000}
