@@ -47,7 +47,7 @@ services:
       - integritas
 
   backend:
-    image: ghcr.io/edge-studio-technology/edge-studio-backend@sha256:0f5d21d2251a3aca62af4e952f859f0864bba76adca9c8812149c6233ba6c44e
+    image: ghcr.io/edge-studio-technology/edge-studio-backend@sha256:4050acc148bc59766107484f63853f47fc7378f4b9bc5d88d65e7d3b7105ebf2
     environment:
       PORT: 3000
       HOST_FILES_ROOT: /host-files
@@ -68,16 +68,21 @@ services:
       DATABASE_PATH: /data/edge-studio.db
       ENABLE_MQTT_BROKER: "false"
       ENABLE_CAMERA: "false"
-      ENABLE_GPIO: "false"
-      ENABLE_SENSORS: "false"
-      HOST_AGENT_URL: ${HOST_AGENT_URL:-http://host.docker.internal:38182}
-      HOST_AGENT_TOKEN: ${HOST_AGENT_TOKEN:-}
-      HOST_CAPABILITY_DEBUG: ${HOST_CAPABILITY_DEBUG:-false}
       APP_SECRET: ${APP_SECRET:-dev-change-me}
       COOKIE_SECURE: ${COOKIE_SECURE:-true}
       SESSION_MAX_AGE_DAYS: ${SESSION_MAX_AGE_DAYS:-7}
       SESSION_IDLE_HOURS: ${SESSION_IDLE_HOURS:-24}
       DOCKER_SOCKET_PATH: /var/run/docker.sock
+      EDGE_STUDIO_DOCKER_SUBNET: ${EDGE_STUDIO_DOCKER_SUBNET:-172.30.0.0/24}
+      EDGE_STUDIO_DOCKER_GATEWAY: ${EDGE_STUDIO_DOCKER_GATEWAY:-172.30.0.1}
+      EGRESS_MAX_RESPONSE_BYTES: ${EGRESS_MAX_RESPONSE_BYTES:-5242880}
+      EGRESS_TIMEOUT_MS: ${EGRESS_TIMEOUT_MS:-5000}
+      EGRESS_MAX_CONCURRENT: ${EGRESS_MAX_CONCURRENT:-4}
+      EGRESS_QUEUE_LIMIT: ${EGRESS_QUEUE_LIMIT:-32}
+      UPLOAD_MAX_FILE_BYTES: ${UPLOAD_MAX_FILE_BYTES:-104857600}
+      UPLOAD_MAX_FILES: ${UPLOAD_MAX_FILES:-1}
+      UPLOAD_MAX_FIELDS: ${UPLOAD_MAX_FIELDS:-8}
+      MQTT_MAX_PAYLOAD_BYTES: ${MQTT_MAX_PAYLOAD_BYTES:-262144}
     volumes:
       - ${HOST_FILES_DIR:-./host-files}:/host-files:ro
       - ${DATA_DIR:-./data}:/data
@@ -98,7 +103,7 @@ services:
       - integritas
 
   frontend:
-    image: ghcr.io/edge-studio-technology/edge-studio-frontend@sha256:26ffabd767d94454bfc8101e784cecceeb8bd72de464f07fcc938c0fb3bc5ac3
+    image: ghcr.io/edge-studio-technology/edge-studio-frontend@sha256:188c7cc8cc9cf9d0320123d3c3c8cc67d9eece9a8c058b98ed7c61f993a1de1d
     ports:
       - "${FRONTEND_PORT:-8080}:443"
     volumes:
@@ -113,15 +118,13 @@ services:
       - integritas
 
   update-agent:
-    image: ghcr.io/edge-studio-technology/edge-studio-update-agent@sha256:7e75599c5c618b402dd83488d830ad88b72f77cd0275e2dea0a4536ddd66fece
+    image: ghcr.io/edge-studio-technology/edge-studio-update-agent@sha256:e78c2e0817cc3f6a8528154bae4bb76afa92d545d303849053539671e7206b57
     environment:
       PORT: 8081
       DOCKER_SOCKET_PATH: /var/run/docker.sock
       MANIFEST_URL: ${MANIFEST_URL}
       RELEASE_CHANNEL: ${RELEASE_CHANNEL:-development}
       BACKEND_INTERNAL_URL: http://backend:3000
-      HOST_AGENT_URL: ${HOST_AGENT_URL:-http://host.docker.internal:38182}
-      HOST_AGENT_TOKEN: ${HOST_AGENT_TOKEN:-}
       STATE_DIR_IN_CONTAINER: /state
       HEALTH_CHECK_TIMEOUT_MS: ${UPDATE_HEALTH_CHECK_TIMEOUT_MS:-60000}
       HEALTH_CHECK_INTERVAL_MS: ${UPDATE_HEALTH_CHECK_INTERVAL_MS:-2000}
