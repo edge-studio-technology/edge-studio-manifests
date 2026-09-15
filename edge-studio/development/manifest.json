@@ -1,7 +1,7 @@
 {
-  "frontend": "ghcr.io/edge-studio-technology/edge-studio-frontend@sha256:188c7cc8cc9cf9d0320123d3c3c8cc67d9eece9a8c058b98ed7c61f993a1de1d",
+  "frontend": "ghcr.io/edge-studio-technology/edge-studio-frontend@sha256:6e293b91b626c05e83729dfddd014f46809a3ba0b6380e86e333ddcdc7183f40",
   "backend": "ghcr.io/edge-studio-technology/edge-studio-backend@sha256:4050acc148bc59766107484f63853f47fc7378f4b9bc5d88d65e7d3b7105ebf2",
   "updateAgent": "ghcr.io/edge-studio-technology/edge-studio-update-agent@sha256:e78c2e0817cc3f6a8528154bae4bb76afa92d545d303849053539671e7206b57",
-  "version": "v0.50.0-dev.8",
-  "createdAt": "2026-09-14T12:25:34.051Z"
+  "version": "v0.50.0-dev.9",
+  "createdAt": "2026-09-15T11:19:41.160Z"
 }
