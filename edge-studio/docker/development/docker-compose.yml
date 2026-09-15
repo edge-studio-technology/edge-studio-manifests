@@ -103,7 +103,10 @@ services:
       - integritas
 
   frontend:
-    image: ghcr.io/edge-studio-technology/edge-studio-frontend@sha256:188c7cc8cc9cf9d0320123d3c3c8cc67d9eece9a8c058b98ed7c61f993a1de1d
+    image: ghcr.io/edge-studio-technology/edge-studio-frontend@sha256:6e293b91b626c05e83729dfddd014f46809a3ba0b6380e86e333ddcdc7183f40
+    environment:
+      UPLOAD_MAX_FILE_BYTES: ${UPLOAD_MAX_FILE_BYTES:-104857600}
+      UPLOAD_MAX_FIELDS: ${UPLOAD_MAX_FIELDS:-8}
     ports:
       - "${FRONTEND_PORT:-8080}:443"
     volumes:
