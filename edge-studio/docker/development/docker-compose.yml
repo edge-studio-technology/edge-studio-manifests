@@ -47,7 +47,7 @@ services:
       - integritas
 
   backend:
-    image: ghcr.io/edge-studio-technology/edge-studio-backend@sha256:0dcb6ea934e7767cc093c9180cde582c7088c06ad5dc639d7f152ed644b4c0f1
+    image: ghcr.io/edge-studio-technology/edge-studio-backend@sha256:ee84823146e6e6b677394e6828a4c4370c9c9f85c23713e3ca94d2e2079d150d
     environment:
       PORT: 3000
       HOST_FILES_ROOT: /host-files
@@ -108,7 +108,7 @@ services:
       - integritas
 
   frontend:
-    image: ghcr.io/edge-studio-technology/edge-studio-frontend@sha256:fbae2cbb1be8d84c87a1e914774f47372e3bd8fdc54cd8d99b1e531033eb58be
+    image: ghcr.io/edge-studio-technology/edge-studio-frontend@sha256:82be812fc9dc28e476f4ee99732a7ece31a050e251cac4e83d0f36ab02a6895a
     environment:
       UPLOAD_MAX_FILE_BYTES: ${UPLOAD_MAX_FILE_BYTES:-104857600}
       UPLOAD_MAX_FIELDS: ${UPLOAD_MAX_FIELDS:-8}
@@ -126,7 +126,7 @@ services:
       - integritas
 
   update-agent:
-    image: ghcr.io/edge-studio-technology/edge-studio-update-agent@sha256:751df6dada7dbc4b93fdcdae4fa29bfe705c945618d7c429547805d7bc90c3b1
+    image: ghcr.io/edge-studio-technology/edge-studio-update-agent@sha256:a132be7d1cdaa1ff939b3ada77b40bf96977c1281cd91609532b52d15ebd728d
     environment:
       PORT: 8081
       DOCKER_SOCKET_PATH: /var/run/docker.sock
