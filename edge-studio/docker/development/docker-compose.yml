@@ -47,7 +47,7 @@ services:
       - integritas
 
   backend:
-    image: ghcr.io/edge-studio-technology/edge-studio-backend@sha256:4050acc148bc59766107484f63853f47fc7378f4b9bc5d88d65e7d3b7105ebf2
+    image: ghcr.io/edge-studio-technology/edge-studio-backend@sha256:0dcb6ea934e7767cc093c9180cde582c7088c06ad5dc639d7f152ed644b4c0f1
     environment:
       PORT: 3000
       HOST_FILES_ROOT: /host-files
@@ -68,6 +68,11 @@ services:
       DATABASE_PATH: /data/edge-studio.db
       ENABLE_MQTT_BROKER: "false"
       ENABLE_CAMERA: "false"
+      ENABLE_GPIO: "false"
+      ENABLE_SENSORS: "false"
+      HOST_AGENT_URL: ${HOST_AGENT_URL:-http://host.docker.internal:38182}
+      HOST_AGENT_TOKEN: ${HOST_AGENT_TOKEN:-}
+      HOST_CAPABILITY_DEBUG: ${HOST_CAPABILITY_DEBUG:-false}
       APP_SECRET: ${APP_SECRET:-dev-change-me}
       COOKIE_SECURE: ${COOKIE_SECURE:-true}
       SESSION_MAX_AGE_DAYS: ${SESSION_MAX_AGE_DAYS:-7}
@@ -103,7 +108,7 @@ services:
       - integritas
 
   frontend:
-    image: ghcr.io/edge-studio-technology/edge-studio-frontend@sha256:6e293b91b626c05e83729dfddd014f46809a3ba0b6380e86e333ddcdc7183f40
+    image: ghcr.io/edge-studio-technology/edge-studio-frontend@sha256:fbae2cbb1be8d84c87a1e914774f47372e3bd8fdc54cd8d99b1e531033eb58be
     environment:
       UPLOAD_MAX_FILE_BYTES: ${UPLOAD_MAX_FILE_BYTES:-104857600}
       UPLOAD_MAX_FIELDS: ${UPLOAD_MAX_FIELDS:-8}
@@ -121,13 +126,15 @@ services:
       - integritas
 
   update-agent:
-    image: ghcr.io/edge-studio-technology/edge-studio-update-agent@sha256:e78c2e0817cc3f6a8528154bae4bb76afa92d545d303849053539671e7206b57
+    image: ghcr.io/edge-studio-technology/edge-studio-update-agent@sha256:751df6dada7dbc4b93fdcdae4fa29bfe705c945618d7c429547805d7bc90c3b1
     environment:
       PORT: 8081
       DOCKER_SOCKET_PATH: /var/run/docker.sock
       MANIFEST_URL: ${MANIFEST_URL}
       RELEASE_CHANNEL: ${RELEASE_CHANNEL:-development}
       BACKEND_INTERNAL_URL: http://backend:3000
+      HOST_AGENT_URL: ${HOST_AGENT_URL:-http://host.docker.internal:38182}
+      HOST_AGENT_TOKEN: ${HOST_AGENT_TOKEN:-}
       STATE_DIR_IN_CONTAINER: /state
       HEALTH_CHECK_TIMEOUT_MS: ${UPDATE_HEALTH_CHECK_TIMEOUT_MS:-60000}
       HEALTH_CHECK_INTERVAL_MS: ${UPDATE_HEALTH_CHECK_INTERVAL_MS:-2000}
@@ -169,3 +176,7 @@ services:
 networks:
   integritas:
     name: edge-studio
+    ipam:
+      config:
+        - subnet: ${EDGE_STUDIO_DOCKER_SUBNET:-172.30.0.0/24}
+          gateway: ${EDGE_STUDIO_DOCKER_GATEWAY:-172.30.0.1}
