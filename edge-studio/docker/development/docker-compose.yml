@@ -47,7 +47,7 @@ services:
       - integritas
 
   backend:
-    image: ghcr.io/edge-studio-technology/edge-studio-backend@sha256:ee84823146e6e6b677394e6828a4c4370c9c9f85c23713e3ca94d2e2079d150d
+    image: ghcr.io/edge-studio-technology/edge-studio-backend@sha256:004ce61efd47523f2776e18e81336c546bb8977f05c4667d5c35188d6ca3a57b
     environment:
       PORT: 3000
       HOST_FILES_ROOT: /host-files
@@ -73,7 +73,7 @@ services:
       HOST_AGENT_URL: ${HOST_AGENT_URL:-http://host.docker.internal:38182}
       HOST_AGENT_TOKEN: ${HOST_AGENT_TOKEN:-}
       HOST_CAPABILITY_DEBUG: ${HOST_CAPABILITY_DEBUG:-false}
-      APP_SECRET: ${APP_SECRET:-dev-change-me}
+      APP_SECRET: ${APP_SECRET:-}
       COOKIE_SECURE: ${COOKIE_SECURE:-true}
       SESSION_MAX_AGE_DAYS: ${SESSION_MAX_AGE_DAYS:-7}
       SESSION_IDLE_HOURS: ${SESSION_IDLE_HOURS:-24}
@@ -108,7 +108,7 @@ services:
       - integritas
 
   frontend:
-    image: ghcr.io/edge-studio-technology/edge-studio-frontend@sha256:82be812fc9dc28e476f4ee99732a7ece31a050e251cac4e83d0f36ab02a6895a
+    image: ghcr.io/edge-studio-technology/edge-studio-frontend@sha256:64119806c30d0d4d2518f08004394f548b443eefb55edbac00dd4873a823d0c3
     environment:
       UPLOAD_MAX_FILE_BYTES: ${UPLOAD_MAX_FILE_BYTES:-104857600}
       UPLOAD_MAX_FIELDS: ${UPLOAD_MAX_FIELDS:-8}
@@ -126,7 +126,7 @@ services:
       - integritas
 
   update-agent:
-    image: ghcr.io/edge-studio-technology/edge-studio-update-agent@sha256:a132be7d1cdaa1ff939b3ada77b40bf96977c1281cd91609532b52d15ebd728d
+    image: ghcr.io/edge-studio-technology/edge-studio-update-agent@sha256:bd5642c6fdaff407a6c3411b3585c06389398ec1a25f2f4ae88ef665571aabec
     environment:
       PORT: 8081
       DOCKER_SOCKET_PATH: /var/run/docker.sock
