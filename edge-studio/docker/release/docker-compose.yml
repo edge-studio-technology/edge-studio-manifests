@@ -12,6 +12,12 @@
 # this, update-agent can't find the frontend/backend containers to swap.
 name: edge-studio
 
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
 services:
   # One-shot: generates the self-signed HTTPS cert the frontend needs and chowns
   # bind-mounted data dirs to uid 1000 (the "node" user backend/update-agent run
@@ -47,7 +53,7 @@ services:
       - integritas
 
   backend:
-    image: ghcr.io/edge-studio-technology/edge-studio-backend@sha256:33640600501bb8dc89ae5ce3b0b01777e2d80560fc9aef7146a42f7f029349c5
+    image: ghcr.io/edge-studio-technology/edge-studio-backend@sha256:78a76d983c1155951f14e94273497c27d1ad763bbeb4b72547bdaaae6407835b
     environment:
       PORT: 3000
       HOST_FILES_ROOT: /host-files
@@ -73,11 +79,21 @@ services:
       HOST_AGENT_URL: ${HOST_AGENT_URL:-http://host.docker.internal:38182}
       HOST_AGENT_TOKEN: ${HOST_AGENT_TOKEN:-}
       HOST_CAPABILITY_DEBUG: ${HOST_CAPABILITY_DEBUG:-false}
-      APP_SECRET: ${APP_SECRET:-dev-change-me}
+      APP_SECRET: ${APP_SECRET:-}
       COOKIE_SECURE: ${COOKIE_SECURE:-true}
       SESSION_MAX_AGE_DAYS: ${SESSION_MAX_AGE_DAYS:-7}
       SESSION_IDLE_HOURS: ${SESSION_IDLE_HOURS:-24}
       DOCKER_SOCKET_PATH: /var/run/docker.sock
+      EDGE_STUDIO_DOCKER_SUBNET: ${EDGE_STUDIO_DOCKER_SUBNET:-172.30.0.0/24}
+      EDGE_STUDIO_DOCKER_GATEWAY: ${EDGE_STUDIO_DOCKER_GATEWAY:-172.30.0.1}
+      EGRESS_MAX_RESPONSE_BYTES: ${EGRESS_MAX_RESPONSE_BYTES:-5242880}
+      EGRESS_TIMEOUT_MS: ${EGRESS_TIMEOUT_MS:-5000}
+      EGRESS_MAX_CONCURRENT: ${EGRESS_MAX_CONCURRENT:-4}
+      EGRESS_QUEUE_LIMIT: ${EGRESS_QUEUE_LIMIT:-32}
+      UPLOAD_MAX_FILE_BYTES: ${UPLOAD_MAX_FILE_BYTES:-104857600}
+      UPLOAD_MAX_FILES: ${UPLOAD_MAX_FILES:-1}
+      UPLOAD_MAX_FIELDS: ${UPLOAD_MAX_FIELDS:-8}
+      MQTT_MAX_PAYLOAD_BYTES: ${MQTT_MAX_PAYLOAD_BYTES:-262144}
     volumes:
       - ${HOST_FILES_DIR:-./host-files}:/host-files:ro
       - ${DATA_DIR:-./data}:/data
@@ -89,6 +105,7 @@ services:
     expose:
       - "3000"
     restart: unless-stopped
+    logging: *default-logging
     depends_on:
       cert-init:
         condition: service_completed_successfully
@@ -98,7 +115,10 @@ services:
       - integritas
 
   frontend:
-    image: ghcr.io/edge-studio-technology/edge-studio-frontend@sha256:331c40247d0de325cb2e53ec465f5b6108f0b3890b096c1b50e8b25d076b6b60
+    image: ghcr.io/edge-studio-technology/edge-studio-frontend@sha256:ed24a90cf80eb7a566f7fd1039b3d3f608e01b9482d500cb904bc956886054d8
+    environment:
+      UPLOAD_MAX_FILE_BYTES: ${UPLOAD_MAX_FILE_BYTES:-104857600}
+      UPLOAD_MAX_FIELDS: ${UPLOAD_MAX_FIELDS:-8}
     ports:
       - "${FRONTEND_PORT:-8080}:443"
     volumes:
@@ -109,11 +129,12 @@ services:
       backend:
         condition: service_started
     restart: unless-stopped
+    logging: *default-logging
     networks:
       - integritas
 
   update-agent:
-    image: ghcr.io/edge-studio-technology/edge-studio-update-agent@sha256:2903758c6d6ea9d34cd11c54e5b12c1127f1c8f5daab8d7facb2b15f2d54061b
+    image: ghcr.io/edge-studio-technology/edge-studio-update-agent@sha256:3216bb542323aaab2f8eddc0dd99a5b5874e3f1ba724d3ac2789d1160945c97b
     environment:
       PORT: 8081
       DOCKER_SOCKET_PATH: /var/run/docker.sock
@@ -135,6 +156,7 @@ services:
     expose:
       - "8081"
     restart: unless-stopped
+    logging: *default-logging
     depends_on:
       cert-init:
         condition: service_completed_successfully
@@ -157,9 +179,14 @@ services:
     volumes:
       - ${MINIMA_DATA_DIR:-./minima}:/home/minima/data
     restart: unless-stopped
+    logging: *default-logging
     networks:
       - integritas
 
 networks:
   integritas:
     name: edge-studio
+    ipam:
+      config:
+        - subnet: ${EDGE_STUDIO_DOCKER_SUBNET:-172.30.0.0/24}
+          gateway: ${EDGE_STUDIO_DOCKER_GATEWAY:-172.30.0.1}
