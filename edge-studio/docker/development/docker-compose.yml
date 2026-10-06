@@ -12,6 +12,12 @@
 # this, update-agent can't find the frontend/backend containers to swap.
 name: edge-studio
 
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
 services:
   # One-shot: generates the self-signed HTTPS cert the frontend needs and chowns
   # bind-mounted data dirs to uid 1000 (the "node" user backend/update-agent run
@@ -47,7 +53,7 @@ services:
       - integritas
 
   backend:
-    image: ghcr.io/edge-studio-technology/edge-studio-backend@sha256:004ce61efd47523f2776e18e81336c546bb8977f05c4667d5c35188d6ca3a57b
+    image: ghcr.io/edge-studio-technology/edge-studio-backend@sha256:3dcd5419736364bbc9c2207084b2cd08ca2f7b08ac1b50febfcaec5910a35028
     environment:
       PORT: 3000
       HOST_FILES_ROOT: /host-files
@@ -99,6 +105,7 @@ services:
     expose:
       - "3000"
     restart: unless-stopped
+    logging: *default-logging
     depends_on:
       cert-init:
         condition: service_completed_successfully
@@ -108,7 +115,7 @@ services:
       - integritas
 
   frontend:
-    image: ghcr.io/edge-studio-technology/edge-studio-frontend@sha256:64119806c30d0d4d2518f08004394f548b443eefb55edbac00dd4873a823d0c3
+    image: ghcr.io/edge-studio-technology/edge-studio-frontend@sha256:550e9a0c792c20b397c9653d979bc64e501bea4ff85013429ce6f1118c09933f
     environment:
       UPLOAD_MAX_FILE_BYTES: ${UPLOAD_MAX_FILE_BYTES:-104857600}
       UPLOAD_MAX_FIELDS: ${UPLOAD_MAX_FIELDS:-8}
@@ -122,11 +129,12 @@ services:
       backend:
         condition: service_started
     restart: unless-stopped
+    logging: *default-logging
     networks:
       - integritas
 
   update-agent:
-    image: ghcr.io/edge-studio-technology/edge-studio-update-agent@sha256:bd5642c6fdaff407a6c3411b3585c06389398ec1a25f2f4ae88ef665571aabec
+    image: ghcr.io/edge-studio-technology/edge-studio-update-agent@sha256:45aa4ad786cdbd8bf14b332ad9a812f7c5d023291870b145696f1abecb3fce28
     environment:
       PORT: 8081
       DOCKER_SOCKET_PATH: /var/run/docker.sock
@@ -148,6 +156,7 @@ services:
     expose:
       - "8081"
     restart: unless-stopped
+    logging: *default-logging
     depends_on:
       cert-init:
         condition: service_completed_successfully
@@ -170,6 +179,7 @@ services:
     volumes:
       - ${MINIMA_DATA_DIR:-./minima}:/home/minima/data
     restart: unless-stopped
+    logging: *default-logging
     networks:
       - integritas
 
