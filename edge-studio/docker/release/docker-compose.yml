@@ -53,7 +53,7 @@ services:
       - integritas
 
   backend:
-    image: ghcr.io/edge-studio-technology/edge-studio-backend@sha256:78a76d983c1155951f14e94273497c27d1ad763bbeb4b72547bdaaae6407835b
+    image: ghcr.io/edge-studio-technology/edge-studio-backend@sha256:d4239d730993c3a9ab5b4bc9c929beb0942910d6485d1a1cae217555e94fabd9
     environment:
       PORT: 3000
       HOST_FILES_ROOT: /host-files
@@ -62,7 +62,7 @@ services:
       INTEGRITAS_BASE_URL: ${INTEGRITAS_BASE_URL:-https://integritas.technology/core}
       INTEGRITAS_API_KEY: ${INTEGRITAS_API_KEY:-}
       INTEGRITAS_REQUEST_ID: ${INTEGRITAS_REQUEST_ID:-edge-studio}
-      INTEGRITAS_REQUEST_TIMEOUT_MS: ${INTEGRITAS_REQUEST_TIMEOUT_MS:-15000}
+      INTEGRITAS_REQUEST_TIMEOUT_MS: ${INTEGRITAS_REQUEST_TIMEOUT_MS:-300000}
       INTEGRITAS_POLL_INTERVAL_SECONDS: ${INTEGRITAS_POLL_INTERVAL_SECONDS:-30}
       INTEGRITAS_PROOF_POLL_TIMEOUT_MINUTES: ${INTEGRITAS_PROOF_POLL_TIMEOUT_MINUTES:-5}
       INTEGRITAS_DEVICE_POLL_INTERVAL_SECONDS: ${INTEGRITAS_DEVICE_POLL_INTERVAL_SECONDS:-5}
@@ -115,7 +115,7 @@ services:
       - integritas
 
   frontend:
-    image: ghcr.io/edge-studio-technology/edge-studio-frontend@sha256:ed24a90cf80eb7a566f7fd1039b3d3f608e01b9482d500cb904bc956886054d8
+    image: ghcr.io/edge-studio-technology/edge-studio-frontend@sha256:9427798cac485cdf02dafc8ca008dab50492ca65fe363ba1878aa8b88f4e99a5
     environment:
       UPLOAD_MAX_FILE_BYTES: ${UPLOAD_MAX_FILE_BYTES:-104857600}
       UPLOAD_MAX_FIELDS: ${UPLOAD_MAX_FIELDS:-8}
@@ -134,7 +134,7 @@ services:
       - integritas
 
   update-agent:
-    image: ghcr.io/edge-studio-technology/edge-studio-update-agent@sha256:3216bb542323aaab2f8eddc0dd99a5b5874e3f1ba724d3ac2789d1160945c97b
+    image: ghcr.io/edge-studio-technology/edge-studio-update-agent@sha256:8dbdfe9ee91ab3d5b0f7140a0aeb7c4da41ece98db27116b43ec07ebc537d1d7
     environment:
       PORT: 8081
       DOCKER_SOCKET_PATH: /var/run/docker.sock
