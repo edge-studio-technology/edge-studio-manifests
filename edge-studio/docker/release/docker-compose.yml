@@ -53,7 +53,7 @@ services:
       - integritas
 
   backend:
-    image: ghcr.io/edge-studio-technology/edge-studio-backend@sha256:c6bada41194cd5f415dadf1923e467f40841ee8f411a58562d8bd6623b84ff34
+    image: ghcr.io/edge-studio-technology/edge-studio-backend@sha256:334c2560cf9b3f7bee4fffa8622e7fb154316dd0e0ade37bbb1d1e7a249c7897
     environment:
       PORT: 3000
       HOST_FILES_ROOT: /host-files
@@ -115,7 +115,7 @@ services:
       - integritas
 
   frontend:
-    image: ghcr.io/edge-studio-technology/edge-studio-frontend@sha256:d68dc7f76c0a41e0d3cd2ac6bc5d71ab994c2a8960578c801e253e09ecd66b80
+    image: ghcr.io/edge-studio-technology/edge-studio-frontend@sha256:b223e842e57b66439da78a3d5887615a6e6b3135c6ac65200ce187aeeba38080
     environment:
       UPLOAD_MAX_FILE_BYTES: ${UPLOAD_MAX_FILE_BYTES:-104857600}
       UPLOAD_MAX_FIELDS: ${UPLOAD_MAX_FIELDS:-8}
