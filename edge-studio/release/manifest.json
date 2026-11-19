@@ -4,8 +4,8 @@
   "updateAgent": "ghcr.io/edge-studio-technology/edge-studio-update-agent@sha256:bc8efd9ea26075dbcb61c031352a9b7020b12bc3e9dff5854cab29598f0c703b",
   "hostRuntime": {
     "url": "https://edgestudio.technology/manifest/release/edge-studio-runtime.tar.gz",
-    "sha256": "d39d0a468b5964f48c2405ff8c4af2790756cbaf1fba8ba097b2be608113930c"
+    "sha256": "94e1a2d96b3927efa72a482a217e5e92b8b439a006a1be246bffc9bea073ac18"
   },
-  "version": "v0.45.0",
-  "createdAt": "2026-11-17T08:07:53.528Z"
+  "version": "v0.45.1",
+  "createdAt": "2026-11-19T17:46:33.237Z"
 }
